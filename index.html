@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wire Court · IM8 Factory Wire</title>
+<style>
+  :root {
+    --burgundy: #50000B;
+    --burgundy-mid: #7A1020;
+    --near-black: #0B0B0C;
+    --off-white: #F6F1EA;
+    --gold: #C9A227;
+    --gold-dim: rgba(201,162,39,0.18);
+    --ink: #1A1214;
+    --muted: #6B5E55;
+    --card: #FFFBF7;
+    --line: rgba(80,0,11,0.12);
+    --green: #1F7A4C;
+    --open: #8B2942;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--near-black);
+    color: var(--off-white);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* Court floor texture */
+  .court-bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(80,0,11,0.55), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 90% 90%, rgba(201,162,39,0.08), transparent 50%),
+      linear-gradient(180deg, #0B0B0C 0%, #12080A 100%);
+  }
+  .court-lines {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.07;
+    background-image:
+      linear-gradient(90deg, transparent 49.5%, var(--gold) 49.5%, var(--gold) 50.5%, transparent 50.5%),
+      linear-gradient(0deg, transparent 49.5%, var(--gold) 49.5%, var(--gold) 50.5%, transparent 50.5%);
+    background-size: 100% 100%, 100% 100%;
+  }
+
+  .wrap {
+    position: relative; z-index: 1;
+    max-width: 1100px; margin: 0 auto; padding: 2rem 1.25rem 4rem;
+  }
+
+  /* —— HERO —— */
+  header.hero {
+    text-align: center;
+    padding: 2.5rem 1rem 2rem;
+    border: 1px solid rgba(201,162,39,0.35);
+    border-radius: 20px;
+    background:
+      linear-gradient(135deg, rgba(80,0,11,0.85), rgba(11,11,12,0.9)),
+      var(--burgundy);
+    box-shadow: 0 0 0 4px rgba(80,0,11,0.4), 0 24px 60px rgba(0,0,0,0.45);
+    margin-bottom: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header.hero::before {
+    content: "";
+    position: absolute; inset: 12px;
+    border: 1px dashed rgba(201,162,39,0.25);
+    border-radius: 14px;
+    pointer-events: none;
+  }
+  .badge-row {
+    display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;
+    margin-bottom: 1rem;
+  }
+  .badge {
+    font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.35rem 0.75rem; border-radius: 999px;
+    background: var(--gold-dim); color: var(--gold);
+    border: 1px solid rgba(201,162,39,0.4);
+    font-weight: 600;
+  }
+  h1 {
+    font-size: clamp(2.4rem, 7vw, 4rem);
+    font-weight: 800; letter-spacing: -0.03em;
+    line-height: 1.05;
+    background: linear-gradient(180deg, #FFF8EC 0%, var(--gold) 100%);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+    margin-bottom: 0.4rem;
+  }
+  .subtitle {
+    font-size: 1rem; color: rgba(246,241,234,0.75);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .pitch {
+    font-size: clamp(1.05rem, 2.5vw, 1.25rem);
+    max-width: 36rem; margin: 0 auto 1.25rem;
+    color: var(--off-white); font-weight: 500;
+  }
+  .meta {
+    font-size: 0.85rem; color: rgba(246,241,234,0.55);
+  }
+
+  /* —— SECTIONS —— */
+  section { margin-bottom: 2.75rem; }
+  .sec-head {
+    display: flex; align-items: baseline; gap: 0.75rem;
+    margin-bottom: 1rem; flex-wrap: wrap;
+  }
+  .sec-num {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em;
+    color: var(--gold); text-transform: uppercase;
+  }
+  h2 {
+    font-size: 1.45rem; font-weight: 700; color: var(--off-white);
+    letter-spacing: -0.02em;
+  }
+
+  /* —— PIPELINE —— */
+  .pipeline {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.6rem;
+  }
+  @media (max-width: 900px) {
+    .pipeline { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .pipeline { grid-template-columns: 1fr; }
+  }
+  .layer {
+    background: var(--card);
+    color: var(--ink);
+    border-radius: 14px;
+    padding: 1rem 0.85rem;
+    border: 1px solid transparent;
+    position: relative;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    min-height: 160px;
+  }
+  .layer:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+    border-color: var(--gold);
+  }
+  .layer .n {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.6rem; height: 1.6rem; border-radius: 50%;
+    background: var(--burgundy); color: var(--gold);
+    font-size: 0.75rem; font-weight: 800; margin-bottom: 0.55rem;
+  }
+  .layer h3 {
+    font-size: 0.92rem; font-weight: 700; margin-bottom: 0.35rem;
+    color: var(--burgundy);
+  }
+  .layer p {
+    font-size: 0.72rem; color: var(--muted); line-height: 1.45;
+  }
+  .layer .arrow {
+    display: none;
+  }
+  @media (min-width: 901px) {
+    .layer:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -0.55rem; top: 50%;
+      transform: translateY(-50%);
+      color: var(--gold);
+      font-size: 1rem; font-weight: 700;
+      z-index: 2;
+      text-shadow: 0 0 8px rgba(201,162,39,0.5);
+    }
+  }
+
+  /* —— WHO'S WHO —— */
+  .roster {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+  .seat {
+    background: rgba(246,241,234,0.04);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 1rem;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .seat:hover {
+    background: rgba(201,162,39,0.08);
+    border-color: rgba(201,162,39,0.45);
+  }
+  .seat .role-tag {
+    font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600; margin-bottom: 0.25rem;
+  }
+  .seat .name {
+    font-size: 1.05rem; font-weight: 700; color: var(--off-white);
+    margin-bottom: 0.2rem;
+  }
+  .seat .desc {
+    font-size: 0.78rem; color: rgba(246,241,234,0.55);
+  }
+
+  /* —— SCOREBOARD —— */
+  .board {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 700px) {
+    .board { grid-template-columns: 1fr; }
+  }
+  .panel {
+    border-radius: 16px;
+    padding: 1.25rem;
+    border: 1px solid var(--line);
+  }
+  .panel.green {
+    background: linear-gradient(160deg, rgba(31,122,76,0.18), rgba(11,11,12,0.6));
+    border-color: rgba(31,122,76,0.4);
+  }
+  .panel.open {
+    background: linear-gradient(160deg, rgba(139,41,66,0.2), rgba(11,11,12,0.6));
+    border-color: rgba(139,41,66,0.4);
+  }
+  .panel h3 {
+    font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase;
+    margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.5rem;
+  }
+  .panel.green h3 { color: #6DDBA0; }
+  .panel.open h3 { color: #E8A0B0; }
+  .dot {
+    width: 0.55rem; height: 0.55rem; border-radius: 50%;
+    display: inline-block;
+  }
+  .panel.green .dot { background: #6DDBA0; box-shadow: 0 0 8px #6DDBA0; }
+  .panel.open .dot { background: #E8A0B0; box-shadow: 0 0 8px #E8A0B0; }
+
+  ul.ticks { list-style: none; }
+  ul.ticks li {
+    font-size: 0.85rem;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid rgba(246,241,234,0.06);
+    display: flex; gap: 0.6rem; align-items: flex-start;
+  }
+  ul.ticks li:last-child { border-bottom: none; }
+  .mark {
+    flex-shrink: 0; font-weight: 800; font-size: 0.75rem;
+    margin-top: 0.15rem; min-width: 1.1rem;
+  }
+  .panel.green .mark { color: #6DDBA0; }
+  .panel.open .mark { color: #E8A0B0; }
+  .path {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.72rem;
+    color: rgba(246,241,234,0.65);
+    word-break: break-all;
+  }
+
+  /* —— POTENTIAL —— */
+  .potential {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    border-radius: 20px;
+    background:
+      linear-gradient(135deg, rgba(201,162,39,0.12), rgba(80,0,11,0.5));
+    border: 1px solid rgba(201,162,39,0.35);
+  }
+  .potential h2 {
+    margin-bottom: 0.75rem;
+    background: linear-gradient(90deg, var(--off-white), var(--gold));
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+  }
+  .potential p {
+    max-width: 38rem; margin: 0 auto;
+    font-size: 1.05rem; color: rgba(246,241,234,0.85);
+  }
+  .flow-chips {
+    display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center;
+    margin-top: 1.25rem;
+  }
+  .chip {
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em;
+    padding: 0.4rem 0.7rem; border-radius: 8px;
+    background: rgba(11,11,12,0.6);
+    border: 1px solid rgba(201,162,39,0.3);
+    color: var(--gold);
+  }
+  .chip.go {
+    background: var(--burgundy);
+    border-color: var(--gold);
+    color: var(--off-white);
+  }
+
+  footer {
+    text-align: center; margin-top: 2.5rem;
+    font-size: 0.75rem; color: rgba(246,241,234,0.35);
+  }
+  footer strong { color: rgba(201,162,39,0.7); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="court-bg" aria-hidden="true"></div>
+<div class="court-lines" aria-hidden="true"></div>
+
+<div class="wrap">
+
+  <!-- 1. HERO -->
+  <header class="hero">
+    <div class="badge-row">
+      <span class="badge">Dwyane · Grok Bot</span>
+      <span class="badge">Fourth Quarter</span>
+      <span class="badge">2026-10-08 HKT</span>
+    </div>
+    <h1>Wire Court</h1>
+    <p class="subtitle">IM8 Factory Wire · Fourth Quarter</p>
+    <p class="pitch">Autonomous detect→preview with muscle memory driving.</p>
+    <p class="meta">Shared box · /workspace · no publish · no spend · merge only on Adrian GO</p>
+  </header>
+
+  <!-- 2. SIX-LAYER FLOW -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">01 · Pipeline</span>
+      <h2>Six-layer flow</h2>
+    </div>
+    <div class="pipeline">
+      <article class="layer">
+        <span class="n">1</span>
+        <h3>Intake detect</h3>
+        <p>Gmail / Slack / WhatsApp RO — signal lands at the front door.</p>
+      </article>
+      <article class="layer">
+        <span class="n">2</span>
+        <h3>Triage</h3>
+        <p>Letta Factory Wire FLAG / OWN / CLOSE · Roma high-signal · Orca Mini board.</p>
+      </article>
+      <article class="layer">
+        <span class="n">3</span>
+        <h3>Design</h3>
+        <p>Jeanette Design System 2026 · Arden · Figma RO · baseline 1077:6224 / 1077:6283.</p>
+      </article>
+      <article class="layer">
+        <span class="n">4</span>
+        <h3>Build</h3>
+        <p>Poteto feature branch · Kev Cloud · theme clone on shared workspace.</p>
+      </article>
+      <article class="layer">
+        <span class="n">5</span>
+        <h3>Check</h3>
+        <p>QA PASS | FAIL | BLOCKED · MM KEEP | DISCARD.</p>
+      </article>
+      <article class="layer">
+        <span class="n">6</span>
+        <h3>Package</h3>
+        <p>Unpublished preview + open PR · stop unless Adrian GO merge.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 3. WHO'S WHO -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">02 · Roster</span>
+      <h2>Who's who</h2>
+    </div>
+    <div class="roster">
+      <div class="seat">
+        <div class="role-tag">Front door</div>
+        <div class="name">Dwyane</div>
+        <div class="desc">Bot Boss · Grok Bot team lead</div>
+      </div>
+      <div class="seat">
+        <div class="role-tag">Cloud build</div>
+        <div class="name">Kev</div>
+        <div class="desc">Cloud seat · Letta execution</div>
+      </div>
+      <div class="seat">
+        <div class="role-tag">Creative Director</div>
+        <div class="name">Arden</div>
+        <div class="desc">Design · Jeanette baseline</div>
+      </div>
+      <div class="seat">
+        <div class="role-tag">P-Stack · Eng Lead</div>
+        <div class="name">Poteto</div>
+        <div class="desc">Shopify PRs · feature branches</div>
+      </div>
+      <div class="seat">
+        <div class="role-tag">Previews</div>
+        <div class="name">Nash</div>
+        <div class="desc">Shopify unpublished previews</div>
+      </div>
+      <div class="seat">
+        <div class="role-tag">Scientist</div>
+        <div class="name">Herb</div>
+        <div class="desc">MM research · muscle memory</div>
+      </div>
+      <div class="seat">
+        <div class="role-tag">Cloud / Worker</div>
+        <div class="name">Reed</div>
+        <div class="desc">MM Cloudflare · workers</div>
+      </div>
+      <div class="seat">
+        <div class="role-tag">MESH Ops</div>
+        <div class="name">Bolt</div>
+        <div class="desc">Mesh operations</div>
+      </div>
+      <div class="seat">
+        <div class="role-tag">Acceptance</div>
+        <div class="name">QA</div>
+        <div class="desc">PASS · FAIL · BLOCKED</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 + 5. SCOREBOARD -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">03 · Scoreboard</span>
+      <h2>Today's court</h2>
+    </div>
+    <div class="board">
+      <div class="panel green">
+        <h3><span class="dot"></span> Greens · live</h3>
+        <ul class="ticks">
+          <li><span class="mark">✓</span><span>Figma Jeanette RO (execution) · Brand Foundation smoke</span></li>
+          <li><span class="mark">✓</span><span>GitHub WRITE via GH_PRENETICS_TOKEN + gh CLI · shopify-im8-ui</span></li>
+          <li><span class="mark">✓</span><span>Letta wire · conv-44438704…</span></li>
+          <li><span class="mark">✓</span><span>Roma Factory Wire</span></li>
+          <li><span class="mark">✓</span><span>Theme clones<br>
+            <span class="path">box → /workspace/shopify-im8-ui</span><br>
+            <span class="path">Kev → /root/workspace/shopify-im8-ui</span>
+          </span></li>
+          <li><span class="mark">✓</span><span>Arden baseline pinned · 1077:6224 / 1077:6283</span></li>
+          <li><span class="mark">✓</span><span>MM notes mirror / mm MCP local · 450 entries</span></li>
+        </ul>
+      </div>
+      <div class="panel open">
+        <h3><span class="dot"></span> Still open</h3>
+        <ul class="ticks">
+          <li><span class="mark">○</span><span>Shopify Theme CLI token on Kev Cloud Vault — mint via client credentials; don't copy expired 24h token</span></li>
+          <li><span class="mark">○</span><span>Codex chat Figma 401 — model-free path works; chat bearer still broken</span></li>
+          <li><span class="mark">○</span><span>Court MM settlement on Kev Cloud — Mini / mirror / plain-English CLOSE undecided</span></li>
+          <li><span class="mark">○</span><span>Letta GitHub App / Ajay org grant — tomorrow</span></li>
+          <li><span class="mark">○</span><span>Taste Memory / radius / style-guide sheets — design GO</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. POTENTIAL -->
+  <section>
+    <div class="potential">
+      <div class="sec-head" style="justify-content:center; margin-bottom:0.5rem;">
+        <span class="sec-num">04 · Endgame</span>
+      </div>
+      <h2>The potential</h2>
+      <p>Detect → FLAG → preview → PR without merge until Adrian GO. Muscle memory drives KEEP / DISCARD. The court runs; you call the whistle.</p>
+      <div class="flow-chips">
+        <span class="chip">detect</span>
+        <span class="chip">FLAG</span>
+        <span class="chip">preview</span>
+        <span class="chip">PR</span>
+        <span class="chip go">Adrian GO → merge</span>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- 05 · THESIS -->
+  <section>
+    <div class="potential" style="border-color: rgba(201,162,39,0.35);">
+      <div class="sec-head" style="justify-content:center; margin-bottom:0.5rem;">
+        <span class="sec-num">05 · Thesis</span>
+      </div>
+      <h2>Proving ground for Muscle Memory</h2>
+      <p>Factory Wire is the experimentation engine. Every daily play logs as a possession — KEEP or DISCARD — refining taste, high-level execution, engineering, and multi-agent orchestration across Dwyane, Kev, Arden, Poteto, Nash, Herb, Reed, Bolt, and QA.</p>
+      <p style="margin-top:0.85rem;">Frontier patterns come from real data and real work, recorded by Muscle Memory. CORE engineering principles are the spine — world-class work that defines how IM8 looks on a global level. Every day the team gets better.</p>
+      <div class="flow-chips" style="margin-top:1.25rem;">
+        <span class="chip">play</span>
+        <span class="chip">possession</span>
+        <span class="chip">KEEP / DISCARD</span>
+        <span class="chip">compound</span>
+        <span class="chip go">get better daily</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <strong>Wire Court</strong> · IM8 Factory Wire · built 2026-10-08 HKT · no secrets · no publish · no spend
+  </footer>
+
+</div>
+</body>
+</html>
